@@ -1,16 +1,17 @@
 # 资源保留、删除候选与隔离清单
 
 审计日期：2026-10-30  
-状态：执行受阻；未删除、未移动、未修改 `.meta`
+状态：Git 基线已建立；删除仍等待 Unity Editor 验证，未删除、未移动、未修改 `.meta`
 
 ## 0. 执行状态（2026-10-30）
 
-本次清理在删除开始前停止，原因是完整工程的可回退 Git 基线无法确认：
+用户已确认 `E:\Unity Engine\AssetImportSandbox_InternationalURP` 是正式工程：
 
-- 当前工程 `E:\Unity Engine\AssetImportSandbox_InternationalURP` 不是 Git 仓库。
-- 同级目录 `E:\Unity Engine\MotionFightPrototype` 配置了指定远程仓库，但其工作区是另一套缺少战斗场景的工程。
-- 该 Git 工作区共有 21 项未提交变化，不能作为当前完整工程的干净回退点。
-- 因此本清单中的所有 `REMOVE` 项目均保持原状，没有进入删除操作。
+- 该工程已初始化为独立 Git 仓库。
+- 已建立改名前完整源码基线 `ee9a0c4`。
+- 已配置远程 `origin` 为 `https://github.com/Kirihara-JQ/MotionFightPrototype.git`。
+- 已加入 Unity 生成目录忽略规则，并使用 Git LFS 管理大型美术和音频资源。
+- 本清单中的所有 `REMOVE` 项目仍未执行删除，等待 Unity Editor 导入、编译、场景和构建验证。
 
 ## 1. 分类口径
 
@@ -25,7 +26,7 @@
 | 分类 | 文件数 | 大小 MB | 说明 |
 |---|---:|---:|---|
 | KEEP | 1,751 | 1,743.45 | 目标场景闭包 + 当前结构入口 + TMP 核心 Resources |
-| REMOVE | 145 | 5.789 | 已标记为候选；因 Git 回退基线未确认，执行状态为 BLOCKED |
+| REMOVE | 145 | 5.789 | 已标记为候选；Git 基线已建立，但尚未执行删除验证 |
 | REVIEW | 893 | 873.40 | 不能凭静态无引用直接删除 |
 | 合计 | 2,789 | 2,622.63 | 与 `Assets` 非 `.meta` 文件总数一致 |
 
@@ -134,6 +135,6 @@ KEEP 集中的具体 GUID 链由第二阶段 Unity `AssetDatabase` 再验证，�
 | 145 个低风险 REMOVE 候选 | 全部保留，未执行 |
 | 1,751 个 KEEP 资源 | 全部保留 |
 | 893 个 REVIEW 资源 | 全部保留，未擅自转成 REMOVE |
-| 阻塞原因 | 当前工程没有可验证的 Git 回退基线 |
+| 当前状态 | Git 基线已建立；等待后续 Unity 原生验证与用户安排 |
 
 详细证据与验证状态见 `CLEANUP_EXECUTION_REPORT.md`。
