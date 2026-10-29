@@ -1,0 +1,39 @@
+# Unity YAML files stay as text for reviewable changes.
+*.unity text
+*.prefab text
+*.asset text
+*.mat text
+*.anim text
+*.controller text
+*.overrideController text
+*.meta text
+*.cs text
+*.md text
+*.json text
+*.inputactions text
+*.shader text
+*.cginc text
+*.hlsl text
+*.shadergraph text
+*.shadersubgraph text
+
+# Large binary art and audio assets are stored with Git LFS.
+*.fbx filter=lfs diff=lfs merge=lfs -text
+*.FBX filter=lfs diff=lfs merge=lfs -text
+*.tif filter=lfs diff=lfs merge=lfs -text
+*.tiff filter=lfs diff=lfs merge=lfs -text
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.tga filter=lfs diff=lfs merge=lfs -text
+*.ogg filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+
+# Lighting data files exceed GitHub's normal per-file limit.
+Assets/3DGamekit/Scenes/GamePlay/Level1/LightingData.asset filter=lfs diff=lfs merge=lfs -text
+Assets/3DGamekit/Scenes/Data/LightingData/Level1/LightingData.asset filter=lfs diff=lfs merge=lfs -text
+Assets/3DGamekit/Scenes/GamePlay/Level2/LightingData.asset filter=lfs diff=lfs merge=lfs -text
+Assets/3DGamekit/Scenes/Data/LightingData/Level2/LightingData.asset filter=lfs diff=lfs merge=lfs -text
