@@ -1,17 +1,20 @@
 # 资源保留、删除候选与隔离清单
 
 审计日期：2026-10-30  
-状态：Git 基线已建立；删除仍等待 Unity Editor 验证，未删除、未移动、未修改 `.meta`
+状态：低风险 REMOVE 批次已执行；893 个 REVIEW 资源未删除
 
 ## 0. 执行状态（2026-10-30）
 
-用户已确认 `E:\Unity Engine\AssetImportSandbox_InternationalURP` 是正式工程：
+用户已确认 `E:\Unity Engine\AssetImportSandbox_InternationalURP` 是正式工程。执行结果：
 
 - 该工程已初始化为独立 Git 仓库。
 - 已建立改名前完整源码基线 `ee9a0c4`。
 - 已配置远程 `origin` 为 `https://github.com/Kirihara-JQ/MotionFightPrototype.git`。
 - 已加入 Unity 生成目录忽略规则，并使用 Git LFS 管理大型美术和音频资源。
-- 本清单中的所有 `REMOVE` 项目仍未执行删除，等待 Unity Editor 导入、编译、场景和构建验证。
+- 145 个低风险 `REMOVE` 资源已通过 Unity `AssetDatabase` 逐个删除，0 失败。
+- Unity 同时删除了这 145 个资源各自关联的 `.meta`，没有手工删除 `.meta`。
+- 原 Level1 场景继续保留：Unity 发现正式场景通过 LightingData 间接依赖它。
+- Play Mode 和 Windows Standalone 构建已通过；详细结果见 `CLEANUP_EXECUTION_REPORT.md`。
 
 ## 1. 分类口径
 
@@ -26,9 +29,9 @@
 | 分类 | 文件数 | 大小 MB | 说明 |
 |---|---:|---:|---|
 | KEEP | 1,751 | 1,743.45 | 目标场景闭包 + 当前结构入口 + TMP 核心 Resources |
-| REMOVE | 145 | 5.789 | 已标记为候选；Git 基线已建立，但尚未执行删除验证 |
-| REVIEW | 893 | 873.40 | 不能凭静态无引用直接删除 |
-| 合计 | 2,789 | 2,622.63 | 与 `Assets` 非 `.meta` 文件总数一致 |
+| REMOVE 已执行 | 145 | 5.789 | 已删除并从工程移除 |
+| REVIEW | 893 | 873.40 | 保持原位，未自动转成 REMOVE |
+| 当前剩余 | 2,644 | 2,616.84 | KEEP + REVIEW；与清理后非 `.meta` 文件数一致 |
 
 ## 3. KEEP
 
@@ -52,18 +55,18 @@
 
 KEEP 集中的具体 GUID 链由第二阶段 Unity `AssetDatabase` 再验证，尤其是 Lightmap、Reflection Probe、NavMesh 和 Shader 子资源。
 
-## 4. REMOVE：低风险删除候选
+## 4. REMOVE：已执行的低风险批次
 
-以下项目均不在目标战斗场景闭包内，也不在当前 Build Settings、URP 配置、TMP 核心 Resources 或已识别运行时字符串路径中。它们构成最终精简工程的第一批删除候选，但本阶段不执行删除。
+以下项目均不在正式战斗场景闭包内，也不在当前 Build Settings、URP 配置、TMP 核心 Resources 或已识别运行时字符串路径中。Unity 反向依赖检查扫描了 613 个场景、Prefab、材质、动画和资产型依赖方，未发现入站引用后，按精确路径逐个删除。
 
 | 资源路径 | 类型 | 文件数 | 大小 MB | 目标直接 | 间接使用 | 动作 | 判断依据 | 风险 | 删除前验证 |
 |---|---|---:|---:|---|---|---|---|---|---|
-| `Assets/TextMesh Pro/Examples & Extras/` | 示例场景、示例脚本、字体、材质、Prefab、纹理 | 136 | 5.53 | 否 | 未发现 | REMOVE | 全部 TextMesh Pro 演示内容；目标场景未引用；没有 Addressables、AssetBundle 或目标脚本字符串加载 | TMP 示例资源被误用会导致该示例场景失效，但不影响目标场景 | Editor 编译；目标场景打开；TMP HUD 构建 |
-| `Assets/TutorialInfo/` | 教程窗口、图标、布局 | 6 | 0.24 | 否 | 未发现 | REMOVE | URP 模板教程内容，不参与运行时 | 仅失去模板帮助面板 | 确认项目 README 已由团队文档替代 |
-| `Assets/Readme.asset` | URP 模板说明 ScriptableObject | 1 | 0.00 | 否 | 未发现 | REMOVE | URP 空模板说明 | 无运行时风险 | 打开目标场景并保存确认 |
-| `Assets/3DGamekit/Readme.asset` | Game Kit 说明 ScriptableObject | 1 | 0.00 | 否 | 未发现 | REMOVE | 示例包说明 | 无运行时风险 | 保留外部来源记录后删除 |
-| `Assets/Scenes/SampleScene.unity` | Scene | 1 | 0.01 | 否 | 未发现 | REMOVE | 空 URP 模板场景，不在 Build Settings | 无目标运行时风险 | 确认目标场景可独立打开并构建 |
-| 合计 | — | 145 | 5.789 | — | — | — | — | — | — |
+| `Assets/TextMesh Pro/Examples & Extras/` | 示例场景、示例脚本、字体、材质、Prefab、纹理 | 136 | 5.53 | 否 | 未发现 | REMOVED | 全部 TextMesh Pro 演示内容；目标场景未引用；没有 Addressables、AssetBundle 或目标脚本字符串加载 | 已执行；与目标场景无引用冲突 | Unity 编译、Play Mode 和 Windows Build 均通过 |
+| `Assets/TutorialInfo/` | 教程窗口、图标、布局 | 6 | 0.24 | 否 | 未发现 | REMOVED | URP 模板教程内容，不参与运行时 | 已执行 | Unity 编译和 Player Build 通过 |
+| `Assets/Readme.asset` | URP 模板说明 ScriptableObject | 1 | 0.00 | 否 | 未发现 | REMOVED | URP 空模板说明 | 已执行 | Editor 打开和构建通过 |
+| `Assets/3DGamekit/Readme.asset` | Game Kit 说明 ScriptableObject | 1 | 0.00 | 否 | 未发现 | REMOVED | 示例包说明 | 已执行 | 外部来源文档继续保留 |
+| `Assets/Scenes/SampleScene.unity` | Scene | 1 | 0.01 | 否 | 未发现 | REMOVED | 空 URP 模板场景，不在 Build Settings | 已执行 | 正式场景打开和构建通过 |
+| 合计 | — | 145 | 5.789 | — | — | 已删除 | 0 失败 | — | 精确路径见 `REMOVE_EXECUTION_MANIFEST.txt` |
 
 说明：
 
@@ -107,7 +110,7 @@ KEEP 集中的具体 GUID 链由第二阶段 Unity `AssetDatabase` 再验证，�
 
 ## 7. 隔离执行规则
 
-第二阶段不得直接按本文件的路径调用文件系统批量删除。正确流程是：
+本批次已严格执行以下流程；后续 REVIEW 批次仍须遵守：
 
 1. 在 Unity Editor 内保存目标场景并完成导入/Console 检查。
 2. 先只启用 145 个低风险候选，验证目标场景、TMP UI 与 Windows 构建。
@@ -129,12 +132,13 @@ KEEP 集中的具体 GUID 链由第二阶段 Unity `AssetDatabase` 再验证，�
 
 | 项目 | 结果 |
 |---|---|
-| 实际删除的非 `.meta` 资源 | 0 |
+| 实际删除的非 `.meta` 资源 | 145 |
+| Unity 自动移除的关联 `.meta` | 145 |
 | 实际移动的资源 | 0 |
-| 实际修改的 `.meta` | 0 |
-| 145 个低风险 REMOVE 候选 | 全部保留，未执行 |
+| 删除失败 | 0 |
 | 1,751 个 KEEP 资源 | 全部保留 |
 | 893 个 REVIEW 资源 | 全部保留，未擅自转成 REMOVE |
-| 当前状态 | Git 基线已建立；等待后续 Unity 原生验证与用户安排 |
+| 原始 Level1 | 保留；正式场景通过 LightingData 递归依赖它 |
+| 当前状态 | 编译、Play Mode、Windows Build 通过 |
 
 详细证据与验证状态见 `CLEANUP_EXECUTION_REPORT.md`。
