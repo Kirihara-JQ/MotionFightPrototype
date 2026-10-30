@@ -6,6 +6,21 @@
 
 当前状态：**Windows Standalone 构建通过，核心战斗与 HUD 已完成 Play Mode 验证。**
 
+## 游戏内画面
+
+<p align="center">
+  <img src="Docs/Images/CombatHUD/combat-hud-fighting-1920.jpg" alt="CircularArea 1v1 战斗与 Combat HUD V2" width="100%">
+</p>
+
+<p align="center"><em>CircularArea 实战画面：Ellen、Chomper、双方 HP、顶部对局状态和底部操作提示。</em></p>
+
+| 对局结算 | 响应式布局 |
+| --- | --- |
+| <img src="Docs/Images/CombatHUD/combat-hud-monster-win-2560x1440.jpg" alt="怪兽胜利结算面板" width="100%"> | <img src="Docs/Images/CombatHUD/combat-hud-16x10.jpg" alt="16:10 响应式 Combat HUD" width="100%"> |
+| 怪兽胜利、重开入口、HUD 状态和场景暗化效果 | `1680×1050` 16:10 比例下的完整布局 |
+
+以上均为当前工程的 Unity Play Mode 实机截图，不是概念图。
+
 ## 核心特性
 
 - CircularArea 独立正式战斗场景。
